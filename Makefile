@@ -1,4 +1,4 @@
-APACK = c:/apack/apack.exe
+APACK = c:/etc/apack.exe
 NASM = c:/nasm/nasm.exe
 
 all: loadfont.com loadfntv.com

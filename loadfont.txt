@@ -1,5 +1,5 @@
-                             LOADFONT 1.01
-                              Stephen Kitt
+                             LOADFONT 1.02
+                            Stephen K. Kitt
 
 
 ÄÄÄÄ Description ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -24,6 +24,10 @@ you have a font in a format which LOADFONT can't load, I'd appreciate if
 you could email it to me along with the name of the program which
 created it; if you can convert it to a known format (raw should be
 available in most programs), emailing that also would be even better.
+
+I've enclosed a small program, 80x30, which will set the screen to
+thirty lines on any VGA-compatible system.  I use it on VGA LCD displays
+where twenty-five lines don't fill the screen...
 
 ÄÄÄÄ Usage ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
@@ -92,20 +96,24 @@ executable's size is always 8,291 bytes).
 
 ÄÄÄÄ Compilation ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-To reassemble LOADFONT, you need NASM and aPACK.  The versions used to
-assemble and compress the binary provided were NASM 0.98 and aPACK
-0.98b; other versions might work, but as usual there are no guarantees.
+To reassemble LOADFONT, you need NASM and (optionally) aPACK.  The
+versions used to assemble and compress the binary provided were NASM
+0.98 and aPACK 0.98b; other versions might work, but as usual there are
+no guarantees.
 
 A makefile is provided; it should work with various MAKEs, including
 GNU's version.  You should edit the file to indicate where your copies
 of NASM and aPACK live; make sure you preserve tabs if your make utility
 requires them.
 
-If you can't use the makefile, the following command lines will assemble
+If you can't use the makefile, the following command line will assemble
 LOADFONT:
          nasm loadfont.asm -f bin -o ldfont.com
+If you have aPACK, compress ldfont.com to yield loadfont.com as follows:
          apack ldfont.com loadfont.com
-(assuming NASM and aPACK are on your PATH).
+Otherwise, just rename the file:
+         ren ldfont.com loadfont.com
+(This assumes NASM and aPACK are on your PATH.)
 
 A verbose version is also available; it displays a version/Copyright
 banner, the font's format, size and the resulting screen size.  To
@@ -127,6 +135,11 @@ to NASM's command line:
     bytes.  Compression is useless on the quiet version, since it will
     always use the same number of clusters, and is only useful on the
     verbose version for clusters of 1024 bytes or fewer...
+
+  ş LOADFONT 1.02, Sunday, August 8, 1999
+
+    Added memory check.  Quiet 802 (778) bytes, verbose 1116 (1013)
+    bytes.
 
 ÄÄÄÄ Copyright and license ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 

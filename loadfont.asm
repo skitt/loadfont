@@ -1,4 +1,4 @@
-; LOADFONT 1.01 - loads a font on a VGA.
+; LOADFONT 1.02 - loads a font on a VGA.
 ; Copyright (c) 1999 Stephen Kitt
 ;
 ; This program is free software; you can redistribute it and/or modify
@@ -35,7 +35,11 @@ start
          mov ah, 0x09
          int 0x21
 %endif
-         mov ax, 0x1A00           ; Check for VGA
+         cmp sp, lfend+256        ; Check available memory
+         jl memok
+         mov dx, nomem
+         jmp error
+memok    mov ax, 0x1A00           ; Check for VGA
          int 0x10
          cmp al, 0x1A
          jne vgaerr
@@ -335,13 +339,14 @@ printw   xor cx, cx               ; Counter
 %endif
 
 %ifdef VERBOSE
-title    db 'LOADFONT 1.01 þ Copyright (c) 1999 Stephen Kitt'
+title    db 'LOADFONT 1.02 þ Copyright (c) 1999 Stephen Kitt'
 %endif
 fullstop db '.'
 crlf     db 0x0D, 0x0A, '$'
 errormsg db 'Error: $'
 nofont   db 'no font file specified$'
 novga    db 'no VGA present$'
+nomem    db 'not enough memory (18KB required)$'
 doserr01 db 'invalid function number$'
 doserr02 db 'file not found$'
 doserr03 db 'path not found$'
@@ -389,3 +394,5 @@ fid      resw 1                   ; File format
 columns  resb 1                   ; Screen columns
 lines    resb 1                   ; Screen lines
 file     resb 16384               ; File
+lfend
+
