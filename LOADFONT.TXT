@@ -1,4 +1,4 @@
-                              LOADFONT 1.0
+                             LOADFONT 1.01
                               Stephen Kitt
 
 
@@ -92,22 +92,20 @@ executable's size is always 8,291 bytes).
 
 ÄÄÄÄ Compilation ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
-To reassemble LOADFONT, you need NASM and APACK.  The versions used to
-assemble and compress the binary provided were NASM 0.98 and APACK
+To reassemble LOADFONT, you need NASM and aPACK.  The versions used to
+assemble and compress the binary provided were NASM 0.98 and aPACK
 0.98b; other versions might work, but as usual there are no guarantees.
 
 A makefile is provided; it should work with various MAKEs, including
 GNU's version.  You should edit the file to indicate where your copies
-of NASM and APACK live; make sure you preserve tabs if your make utility
+of NASM and aPACK live; make sure you preserve tabs if your make utility
 requires them.
 
 If you can't use the makefile, the following command lines will assemble
 LOADFONT:
          nasm loadfont.asm -f bin -o ldfont.com
          apack ldfont.com loadfont.com
-(assuming NASM and APACK are on your PATH).  Using the supplied source
-code should yield a 765-byte LDFONT.COM which compresses down to 743
-bytes.
+(assuming NASM and aPACK are on your PATH).
 
 A verbose version is also available; it displays a version/Copyright
 banner, the font's format, size and the resulting screen size.  To
@@ -115,8 +113,6 @@ assemble it, simply add
          -dVERBOSE
 to NASM's command line:
          nasm -dVERBOSE loadfont.asm -f bin -o ldfontv.com
-This version is 1077 bytes uncompressed; APACK reduces this to 978
-bytes.
 
 ÄÄÄÄ History ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
@@ -124,6 +120,13 @@ bytes.
 
     First public release.  Supports raw, CAFE and FONTEDIT formats (five
     in all).  Quiet 765 (743) bytes, verbose 1077 (978) bytes.
+
+  ş LOADFONT 1.01, Thursday, August 5, 1999
+
+    Dropped a few bytes.  Quiet 756 (738) bytes, verbose 1070 (970)
+    bytes.  Compression is useless on the quiet version, since it will
+    always use the same number of clusters, and is only useful on the
+    verbose version for clusters of 1024 bytes or fewer...
 
 ÄÄÄÄ Copyright and license ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
@@ -155,12 +158,14 @@ LOADFONT web site at
 ÄÄÄÄ Acknowledgments ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 
 Thanks to:
-  * Julian Hall, Simon Tatham and H. Peter Anvin for the Netwide
-    Assembler;
-  * Oliver Fromme for CAFE and its font converter;
-  * Koen Gadeyne for SVGATextMode, which prompted me to write LOADFONT;
-  * PC Magazine for FONTEDIT, which got me into font edition in the
+  ş Julian Hall, Simon Tatham and H. Peter Anvin for the Netwide
+    Assembler (NASM);
+  ş Oliver Fromme for CAFE and its font converter;
+  ş Koen Gadeyne for SVGATextMode, which prompted me to write LOADFONT;
+  ş PC Magazine for FONTEDIT, which got me into font edition in the
     first place;
-  * Jason Hood for the Thomson-Davis Editor;
-  * Joergen Ibsen for aPACK.
+  ş Jason Hood for the Thomson-Davis Editor;
+  ş Joergen Ibsen for aPACK;
+  ş Tennie Remmel for Programmer's Tips and Tricks;
+  ş mammon_ for the Assembly Programming Journal.
 

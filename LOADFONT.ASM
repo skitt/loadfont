@@ -1,4 +1,4 @@
-; LOADFONT 1.0 - loads a font on a VGA.
+; LOADFONT 1.01 - loads a font on a VGA.
 ; Copyright (c) 1999 Stephen Kitt
 ;
 ; This program is free software; you can redistribute it and/or modify
@@ -90,7 +90,6 @@ error    push dx
          int 0x21
          mov dx, fullstop
          int 0x21
-         mov al, 0x01
          jmp end
 
 doserr   mov di, doserrls
@@ -244,14 +243,12 @@ report   mov dx, fontsize
 %endif
 
 ; Finish...
-         xor al, al               ; Success
 end      mov bx, [handle]         ; Quit, closing files if necessary
          or bx, bx
          jz .nofiles
          mov ah, 0x3E
          int 0x21
-.nofiles mov ah, 0x4C
-         int 0x21
+.nofiles ret
 
 ; Decode a loaded file's format
 ; This routine should remain separate, since multiple ret's are smaller than
@@ -313,7 +310,7 @@ decode   cmp word [file], 0x55AA
 %ifdef VERBOSE
          mov word [fid], fraw
 %endif
-.height  mov [height], ah
+.height  mov [height], ah         ; Length divided by 256...
          ret
 
 %ifdef VERBOSE
@@ -333,14 +330,12 @@ printw   xor cx, cx               ; Counter
          add dl, 0x30             ; Make DL a digit
          mov ah, 0x02             ; Print single character
          int 0x21
-         dec cx
-         jnz .loop2
+         loop .loop2
          ret
 %endif
 
-[SEGMENT .data]
 %ifdef VERBOSE
-title    db 'LOADFONT 1.0 þ Copyright (c) 1999 Stephen Kitt'
+title    db 'LOADFONT 1.01 þ Copyright (c) 1999 Stephen Kitt'
 %endif
 fullstop db '.'
 crlf     db 0x0D, 0x0A, '$'
