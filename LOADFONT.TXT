@@ -1,0 +1,166 @@
+                              LOADFONT 1.0
+                              Stephen Kitt
+
+
+ÄÄÄÄ Description ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+LOADFONT is a small utility designed to load a font into VGA memory for
+use in text modes.
+
+Why another font loader?  All the other DOS/VGA font loaders I've found
+use the BIOS's services to load the font, which can cause problems with
+non-standard video modes which typically get reset to 80x25.  In
+particular, modes set up by SVGATextMode tend not to be recognised...
+Further, using S3 chipsets' high-speed text modes requires a font loader
+which doesn't use the BIOS.  (My graphics card is based on the S3
+Trio64.)
+
+LOADFONT uses direct VGA register programming to set the adapter to
+allow the font to be loaded using simple memory accesses.  The BIOS is
+never involved, at least not with the font loading.
+
+A number of font formats are recognised (see "Font formats" below).  If
+you have a font in a format which LOADFONT can't load, I'd appreciate if
+you could email it to me along with the name of the program which
+created it; if you can convert it to a known format (raw should be
+available in most programs), emailing that also would be even better.
+
+ÄÄÄÄ Usage ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+LOADFONT's syntax is very simple:
+
+        LOADFONT <fontname>
+
+Currently, no options are supported.  If you forget the font's filename,
+LOADFONT will complain; likewise if an error occurs while loading the
+font or you don't have a VGA.  (I think it should work on an EGA too,
+but I've prevented it for safety; if you're willing to test it, or you
+know it will work, email me...)
+
+If the font loads successfully, its format will be indicated along with
+its size and the resulting screen size.
+
+ÄÄÄÄ Font formats ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+LOADFONT currently recognises five font formats.
+
+Raw font files are simply a series of bytes, n per character where n is
+the number of scan lines.  Thus a typical 8x16 font (for 80x25 on
+standard VGA) will be 4,096 bytes long.  The font size of a raw file is
+determined by dividing its size by 256.
+
+CAFE, a VGA font editor by Oliver Fromme (TBH-Softworx), has two
+"native" formats: plain fonts, and executable fonts (.COM programs which
+load a font when run).  The former have an eight-byte header:
+        00-01: word, 55AA
+        02-03: word, cell width
+        04-05: word, cell height (?)
+        06-07: word, cell height (?)
+This is followed by the raw font data.  I'm not sure of the role of the
+two words marked "cell height"; they seem to always have the same value.
+The executables have a sixteen-byte header:
+        00-01: word, initial jump
+        02:    byte, 00
+        03-0B: string, 'CAFE!exec'
+        0C:    byte, cell height
+        0D:    byte, cell width
+        0E-0F: word, pointer to character data
+This is followed by the program code, which can in theory be of variable
+length (thanks to the last field).  Then comes the font data, again in
+raw format.
+
+Chris Howe's FONTEDIT 1.0 uses a single, very simple font format.  It
+has an eighteen-byte identifier, the zero-terminated string "fontedit
+1.0 file", followed by the raw character data.  As with raw fonts, the
+font size is determined by subtracting 18 from the file size and
+dividing the remainder by 256.
+
+PC Magazine's FONTEDIT, written by Michael J. Mefford, produces
+executables with a 99-byte header:
+        00-01: word, initial jump
+        02:    byte, 90 (NOP)
+        03-09: bytes, 0D 20 20 20 0D 0A 20
+        0A-29: string, 'PC Magazine ş Michael J. Mefford'
+        2A-2C: bytes, 00 1A
+        2C:    byte, expected video mode
+        2D-31: bytes, 02 01 01 04 41
+        32:    byte, character height
+        33-34: bytes, 00 01
+        35-62: bytes, code
+This is followed by the raw data, padded to 8,192 bytes (so the
+executable's size is always 8,291 bytes).
+
+ÄÄÄÄ Compilation ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+To reassemble LOADFONT, you need NASM and APACK.  The versions used to
+assemble and compress the binary provided were NASM 0.98 and APACK
+0.98b; other versions might work, but as usual there are no guarantees.
+
+A makefile is provided; it should work with various MAKEs, including
+GNU's version.  You should edit the file to indicate where your copies
+of NASM and APACK live; make sure you preserve tabs if your make utility
+requires them.
+
+If you can't use the makefile, the following command lines will assemble
+LOADFONT:
+         nasm loadfont.asm -f bin -o ldfont.com
+         apack ldfont.com loadfont.com
+(assuming NASM and APACK are on your PATH).  Using the supplied source
+code should yield a 765-byte LDFONT.COM which compresses down to 743
+bytes.
+
+A verbose version is also available; it displays a version/Copyright
+banner, the font's format, size and the resulting screen size.  To
+assemble it, simply add
+         -dVERBOSE
+to NASM's command line:
+         nasm -dVERBOSE loadfont.asm -f bin -o ldfontv.com
+This version is 1077 bytes uncompressed; APACK reduces this to 978
+bytes.
+
+ÄÄÄÄ History ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+  ş LOADFONT 1.0, Wednesday, August 4, 1999
+
+    First public release.  Supports raw, CAFE and FONTEDIT formats (five
+    in all).  Quiet 765 (743) bytes, verbose 1077 (978) bytes.
+
+ÄÄÄÄ Copyright and license ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+LOADFONT is Copyright (c) 1999 Stephen Kitt.
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+ÄÄÄÄ Contact information ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+My (permanent) email address is
+        steve@tardis.ed.ac.uk
+
+New versions of LOADFONT will always be available first from the
+LOADFONT web site at
+        http://www.tardis.ed.ac.uk/~steve/loadfont.shtml
+
+ÄÄÄÄ Acknowledgments ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+Thanks to:
+  * Julian Hall, Simon Tatham and H. Peter Anvin for the Netwide
+    Assembler;
+  * Oliver Fromme for CAFE and its font converter;
+  * Koen Gadeyne for SVGATextMode, which prompted me to write LOADFONT;
+  * PC Magazine for FONTEDIT, which got me into font edition in the
+    first place;
+  * Jason Hood for the Thomson-Davis Editor;
+  * Joergen Ibsen for aPACK.
+

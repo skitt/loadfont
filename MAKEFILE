@@ -1,0 +1,11 @@
+APACK = c:/apack/apack.exe
+NASM = c:/nasm/nasm16.exe
+
+all: loadfont.com
+
+loadfont.com: ldfont.com
+	$(APACK) ldfont.com loadfont.com
+
+ldfont.com: loadfont.asm
+	$(NASM) loadfont.asm -f bin -o ldfont.com
+
