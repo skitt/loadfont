@@ -1,7 +1,7 @@
 APACK = c:/etc/apack.exe
 NASM = c:/nasm/nasm.exe
 
-all: loadfont.com loadfntv.com
+all: loadfont.com loadfntv.com invert.com
 
 loadfont.com: ldfont.com
 	$(APACK) ldfont.com loadfont.com
@@ -14,3 +14,6 @@ ldfont.com: loadfont.asm
 
 ldfntv.com: loadfont.asm
 	$(NASM) -dVERBOSE loadfont.asm -f bin -o ldfntv.com
+
+invert.com: invert.asm
+	$(NASM) invert.asm -f bin -o invert.com
